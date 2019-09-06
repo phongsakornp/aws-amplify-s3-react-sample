@@ -1,9 +1,9 @@
 View images from AWS S3 with AWS Amplify.
 
 ## How to run?
-Before you can run the app you have to setup AWS Amplify with added `auth` and `storage`.
+Before you can run the app you have to setup AWS Amplify with added `auth` and `storage`.<br>
 You need to add `awsConfig.js` file in the `src/` directory.
-You can get this from Amplify generated file.
+You can get this from Amplify generated file.<br>
 The config file is in the form:
 
 ```javascript
