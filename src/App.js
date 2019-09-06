@@ -1,25 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Grommet, Box } from "grommet";
+import { Auth, Hub } from "aws-amplify";
+
+import { MAuthenticator } from "./auth";
+import StorageViewer from "./StorageViewer";
 
 function App() {
+  const [user, setUser] = React.useState(null);
+
+  const loadUser = () => {
+    Auth.currentAuthenticatedUser({ bypassCache: true })
+      .then(user => {
+        setUser({ user });
+      })
+      .catch(err => {
+        console.log(`Error authenticate user:`, err);
+        setUser({ user: null });
+      });
+  };
+
+  React.useEffect(() => {
+    loadUser();
+    Hub.listen("auth", data => {
+      const { payload } = data;
+      loadUser(payload);
+    });
+  }, []);
+
+  let main = user ? <StorageViewer /> : <MAuthenticator />;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Grommet>
+      <Box
+        fill="horizontal"
+        align="center"
+        justify="center"
+        style={{ height: "100vh" }}
+      >
+        {main}
+      </Box>
+    </Grommet>
   );
 }
 
